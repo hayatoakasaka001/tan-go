@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="tan-go icon">
+  <rect width="512" height="512" rx="112" fill="#f7f3ea"/>
+  <path d="M118 142c0-24 20-44 44-44h188c24 0 44 20 44 44v228c0 24-20 44-44 44H162c-24 0-44-20-44-44V142Z" fill="#1f2933"/>
+  <path d="M158 160c0-12 10-22 22-22h152c12 0 22 10 22 22v192c0 12-10 22-22 22H180c-12 0-22-10-22-22V160Z" fill="#fffaf0"/>
+  <path d="M190 220h132v26H190v-26Zm0 58h96v26h-96v-26Z" fill="#d9480f"/>
+  <path d="M186 160h140" stroke="#1f2933" stroke-width="16" stroke-linecap="round"/>
+</svg>
