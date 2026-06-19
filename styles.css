@@ -287,10 +287,31 @@ select:focus-visible {
   font-weight: 700;
 }
 
+.phonetic {
+  color: var(--muted);
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
 .meanings {
   font-size: 1.45rem;
   font-weight: 800;
   line-height: 1.45;
+}
+
+.audio-button {
+  width: min(100%, 180px);
+  min-height: 44px;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f0ebe1;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.audio-button:hover {
+  background: #e7dfd2;
 }
 
 .related-list {

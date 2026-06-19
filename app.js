@@ -395,6 +395,28 @@ function formatDateTime(value) {
   }).format(new Date(value));
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function getAudioSource(word) {
+  const audio = String(word.audio || "").trim();
+  return audio || "";
+}
+
+function playAudio(source) {
+  if (!source) return;
+  const audio = new Audio(source);
+  audio.play().catch(() => {
+    alert("音声を再生できませんでした。音声ファイルの場所を確認してください。");
+  });
+}
+
 function pushLog(wordId, mode, result) {
   state.reviewLogs.push({
     id: createId(),
@@ -644,6 +666,8 @@ function normalizeImportedWords(rows) {
     const meanings = splitValues(byHeader(["meaning", "meanings", "ja", "日本語", "訳"], 2));
     const level = normalizeLevel(byHeader(["level", "レベル", "出る順"], 3));
     const related = parseRelated(byHeader(["related", "関連", "派生語", "熟語"], 4));
+    const phonetic = byHeader(["phonetic", "ipa", "pronunciation", "発音記号", "発音"], 5).trim();
+    const audio = byHeader(["audio", "audio_url", "sound", "音声", "音声ファイル"], 6).trim();
 
     if (!word || meanings.length === 0) return null;
 
@@ -654,7 +678,9 @@ function normalizeImportedWords(rows) {
       unit: 0,
       pos: pos.length ? pos : ["その他"],
       meanings,
-      related
+      related,
+      phonetic,
+      audio
     };
   }).filter(Boolean);
 }
@@ -765,16 +791,21 @@ function renderPractice() {
 
   const word = getWord(session.wordIds[session.currentIndex]);
   const progress = progressFor(word.id);
+  const audioSource = getAudioSource(word);
   const answer = session.isAnswerVisible ? `
     <div class="answer">
-      <div class="pos">${word.pos.join(" / ")}</div>
-      <div class="meanings">${word.meanings.join("、")}</div>
+      <div class="pos">${word.pos.map(escapeHtml).join(" / ")}</div>
+      ${word.phonetic ? `<div class="phonetic">${escapeHtml(word.phonetic)}</div>` : ""}
+      <div class="meanings">${word.meanings.map(escapeHtml).join("、")}</div>
+      ${audioSource ? `
+        <button class="audio-button" data-audio-src="${escapeHtml(audioSource)}" type="button">音声</button>
+      ` : ""}
       ${word.related?.length ? `
         <div class="related-list" aria-label="関連語">
           ${word.related.map((item) => `
             <div class="related-item">
-              <span class="related-word">${item.word}</span>
-              <span class="related-meaning">${item.meaning}</span>
+              <span class="related-word">${escapeHtml(item.word)}</span>
+              <span class="related-meaning">${escapeHtml(item.meaning)}</span>
             </div>
           `).join("")}
         </div>
@@ -791,15 +822,15 @@ function renderPractice() {
     </header>
 
     <section class="card">
-      <h1 class="word">${word.word}</h1>
+      <h1 class="word">${escapeHtml(word.word)}</h1>
       ${answer}
     </section>
 
     <div class="button-stack">
       ${session.isAnswerVisible ? `
         <div class="judge-grid">
-          <button class="danger-button" data-action="judge-miss">ミス</button>
-          <button class="secondary-button" data-action="judge-correct">正解</button>
+          <button class="danger-button" data-action="judge-correct">正解</button>
+          <button class="secondary-button" data-action="judge-miss">ミス</button>
           <button class="primary-button" data-action="judge-mastered">習得済み</button>
         </div>
       ` : `
@@ -871,7 +902,7 @@ function renderSettings() {
 
     <section class="notice-box">
       <p>現在の単語データ: ${words.length}語</p>
-      <p>CSVは word,pos,meaning,level,related の順で読み込めます。related は empire:帝国;imperialism:帝国主義 のように書けます。</p>
+      <p>CSVは word,pos,meaning,level,related,phonetic,audio の順で読み込めます。phonetic は発音記号、audio は音声ファイルの場所です。</p>
       <p>進捗はこの端末のブラウザ内だけに保存されます。ログインやサーバー同期はありません。</p>
     </section>
   `);
@@ -928,6 +959,12 @@ app.addEventListener("click", (event) => {
   const restoreId = target.dataset.restore;
   if (restoreId) {
     restoreMastered(restoreId);
+    return;
+  }
+
+  const audioSource = target.dataset.audioSrc;
+  if (audioSource) {
+    playAudio(audioSource);
     return;
   }
 
