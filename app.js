@@ -409,11 +409,35 @@ function getAudioSource(word) {
   return audio || "";
 }
 
-function playAudio(source) {
-  if (!source) return;
+function speakWord(word) {
+  if (!("speechSynthesis" in window) || !window.SpeechSynthesisUtterance) {
+    alert("このブラウザは読み上げに対応していません。");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "en-US";
+  utterance.rate = 0.86;
+
+  const voice = window.speechSynthesis
+    .getVoices()
+    .find((item) => /^en[-_]/i.test(item.lang));
+
+  if (voice) utterance.voice = voice;
+  window.speechSynthesis.speak(utterance);
+}
+
+function playPronunciation(word, source) {
+  if (!source) {
+    speakWord(word);
+    return;
+  }
+
   const audio = new Audio(source);
   audio.play().catch(() => {
-    alert("音声を再生できませんでした。音声ファイルの場所を確認してください。");
+    speakWord(word);
   });
 }
 
@@ -797,9 +821,7 @@ function renderPractice() {
       <div class="pos">${word.pos.map(escapeHtml).join(" / ")}</div>
       ${word.phonetic ? `<div class="phonetic">${escapeHtml(word.phonetic)}</div>` : ""}
       <div class="meanings">${word.meanings.map(escapeHtml).join("、")}</div>
-      ${audioSource ? `
-        <button class="audio-button" data-audio-src="${escapeHtml(audioSource)}" type="button">音声</button>
-      ` : ""}
+      <button class="audio-button" data-audio-word="${escapeHtml(word.word)}" data-audio-src="${escapeHtml(audioSource)}" type="button">音声</button>
       ${word.related?.length ? `
         <div class="related-list" aria-label="関連語">
           ${word.related.map((item) => `
@@ -902,7 +924,7 @@ function renderSettings() {
 
     <section class="notice-box">
       <p>現在の単語データ: ${words.length}語</p>
-      <p>CSVは word,pos,meaning,level,related,phonetic,audio の順で読み込めます。phonetic は発音記号、audio は音声ファイルの場所です。</p>
+      <p>CSVは word,pos,meaning,level,related,phonetic,audio の順で読み込めます。phonetic は発音記号、audio は任意です。空ならブラウザの英語読み上げを使います。</p>
       <p>進捗はこの端末のブラウザ内だけに保存されます。ログインやサーバー同期はありません。</p>
     </section>
   `);
@@ -962,9 +984,9 @@ app.addEventListener("click", (event) => {
     return;
   }
 
-  const audioSource = target.dataset.audioSrc;
-  if (audioSource) {
-    playAudio(audioSource);
+  const audioWord = target.dataset.audioWord;
+  if (audioWord !== undefined) {
+    playPronunciation(audioWord, target.dataset.audioSrc || "");
     return;
   }
 

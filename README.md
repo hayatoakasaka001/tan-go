@@ -17,6 +17,6 @@ imperial,adjective,imperial;royal,A,empire:empire;imperialism:imperialism,/imˈp
 - `level`: A, B, C, or any custom level name
 - `related`: related words or phrases, written like `word:meaning;word:meaning`
 - `phonetic`: pronunciation symbol such as IPA
-- `audio`: audio file path or URL
+- `audio`: optional audio file path or URL
 
-`phonetic` and `audio` are optional. When `audio` is set, the app shows an audio button after the answer is revealed.
+`phonetic` and `audio` are optional. The app always shows an audio button after the answer is revealed. When `audio` is set, it plays that file. When `audio` is empty, the browser reads the English word aloud.
