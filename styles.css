@@ -267,6 +267,47 @@ select:focus-visible {
   background: var(--surface);
 }
 
+.word-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 10px;
+}
+
+.word-audio-button,
+.word-row-spacer {
+  width: 52px;
+  height: 52px;
+}
+
+.word-audio-button {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #f0ebe1;
+  color: var(--ink);
+}
+
+.word-audio-button:hover {
+  background: #e7dfd2;
+}
+
+.word-audio-button svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.15;
+}
+
+.word-audio-button svg path:first-child {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
 .word {
   margin: 0;
   overflow-wrap: anywhere;
@@ -297,21 +338,6 @@ select:focus-visible {
   font-size: 1.45rem;
   font-weight: 800;
   line-height: 1.45;
-}
-
-.audio-button {
-  width: min(100%, 180px);
-  min-height: 44px;
-  margin: 0 auto;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #f0ebe1;
-  color: var(--ink);
-  font-weight: 800;
-}
-
-.audio-button:hover {
-  background: #e7dfd2;
 }
 
 .related-list {
@@ -416,6 +442,22 @@ select:focus-visible {
   .card {
     min-height: 330px;
     padding: 22px 18px;
+  }
+
+  .word-row {
+    grid-template-columns: 46px minmax(0, 1fr) 46px;
+    gap: 8px;
+  }
+
+  .word-audio-button,
+  .word-row-spacer {
+    width: 46px;
+    height: 46px;
+  }
+
+  .word-audio-button svg {
+    width: 25px;
+    height: 25px;
   }
 
   .judge-grid {

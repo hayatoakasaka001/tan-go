@@ -821,7 +821,6 @@ function renderPractice() {
       <div class="pos">${word.pos.map(escapeHtml).join(" / ")}</div>
       ${word.phonetic ? `<div class="phonetic">${escapeHtml(word.phonetic)}</div>` : ""}
       <div class="meanings">${word.meanings.map(escapeHtml).join("、")}</div>
-      <button class="audio-button" data-audio-word="${escapeHtml(word.word)}" data-audio-src="${escapeHtml(audioSource)}" type="button">音声</button>
       ${word.related?.length ? `
         <div class="related-list" aria-label="関連語">
           ${word.related.map((item) => `
@@ -844,7 +843,17 @@ function renderPractice() {
     </header>
 
     <section class="card">
-      <h1 class="word">${escapeHtml(word.word)}</h1>
+      <div class="word-row">
+        <button class="word-audio-button" data-audio-word="${escapeHtml(word.word)}" data-audio-src="${escapeHtml(audioSource)}" type="button" aria-label="音声を再生" title="音声">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 9v6h4l5 4V5L8 9H4Z"></path>
+            <path d="M16 9.5c.8.7 1.3 1.6 1.3 2.5s-.5 1.8-1.3 2.5"></path>
+            <path d="M18.7 6.8c1.5 1.4 2.3 3.2 2.3 5.2s-.8 3.8-2.3 5.2"></path>
+          </svg>
+        </button>
+        <h1 class="word">${escapeHtml(word.word)}</h1>
+        <span class="word-row-spacer" aria-hidden="true"></span>
+      </div>
       ${answer}
     </section>
 
