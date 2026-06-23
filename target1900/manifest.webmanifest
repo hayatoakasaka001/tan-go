@@ -1,0 +1,17 @@
+{
+  "name": "tan-go!1900",
+  "short_name": "tan-go!1900",
+  "description": "tan-go!1900用の英単語練習アプリ",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f7f3ea",
+  "theme_color": "#f7f3ea",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
