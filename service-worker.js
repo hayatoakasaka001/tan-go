@@ -1,4 +1,4 @@
-const CACHE_NAME = "tan-go-v10";
+const CACHE_NAME = "tan-go-v11";
 const ASSETS = [
   "./",
   "./index.html",

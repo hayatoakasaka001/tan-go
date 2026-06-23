@@ -746,6 +746,31 @@ async function readTextFile(file) {
 
 function screen(content) {
   app.innerHTML = `<main class="app-shell"><div class="screen">${content}</div></main>`;
+  queueWordFit();
+}
+
+function fitWordText() {
+  const wordElement = app.querySelector(".word");
+  if (!wordElement) return;
+
+  const styles = getComputedStyle(wordElement);
+  const maxSize = Number.parseFloat(styles.getPropertyValue("--word-max-font-size")) || 84;
+  const minSize = Number.parseFloat(styles.getPropertyValue("--word-min-font-size")) || 24;
+  let size = maxSize;
+
+  wordElement.style.fontSize = `${size}px`;
+
+  while (wordElement.scrollWidth > wordElement.clientWidth + 1 && size > minSize) {
+    size -= 1;
+    wordElement.style.fontSize = `${size}px`;
+  }
+}
+
+function queueWordFit() {
+  requestAnimationFrame(() => {
+    fitWordText();
+    requestAnimationFrame(fitWordText);
+  });
 }
 
 function renderHome() {
@@ -1059,5 +1084,7 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./service-worker.js").catch(() => {});
   });
 }
+
+window.addEventListener("resize", queueWordFit);
 
 render();
